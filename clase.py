@@ -83,6 +83,40 @@ class ImagenDICOM:
             print(f"Error al obtener información del paciente: {e}")
             return "Anonimo", "000", "SinID"
 
+class ImagenSimple:
+    def __init__(self, ruta):
+        self.ruta = ruta
+        try:
+            self.img = cv2.imread(ruta)
+            if self.img is None:
+                raise ValueError("No se pudo cargar la imagen.")
+        except Exception as e:
+            print(f"Error al cargar imagen: {e}")
+            self.img = np.zeros((100, 100, 3), dtype=np.uint8)
+
+    def binarizar(self, metodo, umbral=127):
+        tipos = {
+            'binario': cv2.THRESH_BINARY,
+            'binario_invertido': cv2.THRESH_BINARY_INV,
+            'truncado': cv2.THRESH_TRUNC,
+            'tozero': cv2.THRESH_TOZERO,
+            'tozero_invertido': cv2.THRESH_TOZERO_INV
+        }
+        try:
+            if metodo not in tipos:
+                raise ValueError("Método de binarización inválido.")
+            _, self.img_binarizada = cv2.threshold(cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY), umbral, 255, tipos[metodo])
+        except Exception as e:
+            print(f"Error en binarización: {e}")
+            self.img_binarizada = self.img.copy()
+
+    def morfologia(self, tam_kernel):
+        try:
+            kernel = np.ones((tam_kernel, tam_kernel), np.uint8)
+            self.img_morf = cv2.morphologyEx(self.img_binarizada, cv2.MORPH_CLOSE, kernel)
+        except Exception as e:
+            print(f"Error en transformación morfológica: {e}")
+            self.img_morf = self.img_binarizada.copy()
 
 
 
