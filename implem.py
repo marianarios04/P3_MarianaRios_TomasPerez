@@ -119,7 +119,7 @@ def menu():
                     cv2.imwrite(nombre_archivo, img_obj.img_final)
                     print(f"Imagen procesada guardada como {nombre_archivo}")
                 except Exception as e:
-                    print(f"Error al procesar
+                    print(f"Error al procesar")
 
         elif opcion == 'f':
             print("Saliendo del sistema.")
