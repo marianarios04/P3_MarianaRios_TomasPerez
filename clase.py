@@ -26,6 +26,53 @@ class ImagenDICOM:
         except Exception as e:
             print(f"Error al cargar archivos DICOM: {e}")
             return []
+    def _leer_dicom_objs(self):
+        dicom_objs = []
+        for archivo in self.archivos:
+            ruta_completa = os.path.join(self.carpeta, archivo)
+            try:
+                ds = pydicom.dcmread(ruta_completa)
+                # Intentamos acceder al pixel_array
+                try:
+                    _ = ds.pixel_array
+                except:
+                    ds.decompress()  # Intenta descomprimir si está comprimido
+                dicom_objs.append(ds)
+            except Exception as e: 
+                print(f"Error al leer el archivo {archivo}: {e}")
+        return dicom_objs
+
+    def _reconstruir_volumen(self):
+        try:
+            slices = [d.pixel_array for d in self.dicom_objs if hasattr(d, 'pixel_array')]
+            if not slices:
+                raise ValueError("No se pudieron extraer las imágenes de los archivos DICOM.")
+            volumen = np.stack(slices, axis=-1)
+            return volumen
+        except Exception as e:
+            print(f"Error al reconstruir volumen 3D: {e}")
+            return np.array([])
+
+    def mostrar_cortes(self):
+        try:
+            if self.volumen.size == 0:
+                print("Volumen no disponible para mostrar cortes.")
+                return
+            vol = self.volumen
+            fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+            axs[0].imshow(vol[:, :, vol.shape[2] // 2], cmap='gray')
+            axs[0].set_title("Transversal")
+            axs[1].imshow(vol[:, vol.shape[1] // 2, :], cmap='gray')
+            axs[1].set_title("Sagital")
+            axs[2].imshow(vol[vol.shape[0] // 2, :, :], cmap='gray')
+            axs[2].set_title("Coronal")
+            for ax in axs:
+                ax.axis('off')
+            plt.tight_layout()
+            plt.show()
+        except Exception as e:
+            print(f"Error al mostrar cortes: {e}")
+
 
 
 
