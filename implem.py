@@ -103,3 +103,12 @@ def menu():
                     print(f"Error al procesar imagen: {e}")
             else:
                 print("Clave no encontrada.")
+
+        elif opcion == 'f':
+            print("Saliendo del sistema.")
+            break
+
+        else:
+            print("Opción no válida. Intente de nuevo.")
+
+menu()
