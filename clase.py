@@ -72,6 +72,16 @@ class ImagenDICOM:
             plt.show()
         except Exception as e:
             print(f"Error al mostrar cortes: {e}")
+    def obtener_info_paciente(self):
+        try:
+            ds = self.dicom_objs[0]
+            nombre = getattr(ds, "PatientName", "Anonimo")
+            edad = getattr(ds, "PatientAge", "000Y")
+            id_paciente = getattr(ds, "PatientID", "SinID")
+            return str(nombre), edad[:3], id_paciente
+        except Exception as e:
+            print(f"Error al obtener información del paciente: {e}")
+            return "Anonimo", "000", "SinID"
 
 
 
