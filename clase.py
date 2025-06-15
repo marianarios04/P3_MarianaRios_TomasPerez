@@ -118,5 +118,20 @@ class ImagenSimple:
             print(f"Error en transformación morfológica: {e}")
             self.img_morf = self.img_binarizada.copy()
 
-
+    def dibujar_forma_y_texto(self, forma, tam_kernel):
+        try:
+            img_out = self.img_morf.copy()
+            if forma == 'circulo':
+                cv2.circle(img_out, (100, 100), 50, (255, 0, 0), 2)
+            elif forma == 'cuadrado':
+                cv2.rectangle(img_out, (50, 50), (150, 150), (0, 255, 0), 2)
+            else:
+                raise ValueError("Forma no válida")
+            texto = f"Imagen binarizada - Kernel: {tam_kernel}"
+            cv2.putText(img_out, texto, (10, img_out.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1)
+            self.img_final = img_out
+        except Exception as e:
+            print(f"Error al dibujar forma y texto: {e}")
+            self.img_final = self.img_morf.copy()
+        
 
