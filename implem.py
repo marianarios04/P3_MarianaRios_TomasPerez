@@ -81,3 +81,25 @@ def menu():
                     print(f"Error en transformación geométrica: {e}")
             else:
                 print("Clave no encontrada.")
+
+        elif opcion == 'e':
+            clave = input("Clave de imagen JPG/PNG: ")
+            if clave in dic_archivos:
+                try:
+                    img_obj = dic_archivos[clave]
+                    print("Métodos: binario, binario_invertido, truncado, tozero, tozero_invertido")
+                    metodo = input("Elija método de binarización: ")
+                    kernel = int(input("Tamaño del kernel: "))
+                    forma = input("Forma a dibujar (circulo/cuadrado): ")
+
+                    img_obj.binarizar(metodo)
+                    img_obj.morfologia(kernel)
+                    img_obj.dibujar_forma_y_texto(forma, kernel)
+
+                    nombre_archivo = f"{clave}_procesada.png"
+                    cv2.imwrite(nombre_archivo, img_obj.img_final)
+                    print(f"Imagen procesada guardada como {nombre_archivo}")
+                except Exception as e:
+                    print(f"Error al procesar imagen: {e}")
+            else:
+                print("Clave no encontrada.")
