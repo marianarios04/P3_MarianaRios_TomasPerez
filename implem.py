@@ -31,3 +31,17 @@ def menu():
                 print(f"Carpeta {clave} procesada y guardada.")
             except Exception as e:
                 print(f"Error al procesar carpeta DICOM: {e}")
+                
+        elif opcion == 'b':
+            clave = input("Clave del DICOM para paciente: ")
+            if clave in dic_archivos:
+                try:
+                    dicom = dic_archivos[clave]
+                    nombre, edad, id_pac = dicom.obtener_info_paciente()
+                    paciente = Paciente(nombre, edad, id_pac, dicom.volumen)
+                    dic_pacientes[id_pac] = paciente
+                    print(f"Paciente {nombre} creado con ID {id_pac}.")
+                except Exception as e:
+                    print(f"Error al ingresar paciente: {e}")
+            else:
+                print("Clave no encontrada.")
