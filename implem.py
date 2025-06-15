@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from clase import Paciente, ImagenDICOM, ImagenSimple
 
 dic_pacientes = {}
 dic_archivos = {}
@@ -31,7 +32,7 @@ def menu():
                 print(f"Carpeta {clave} procesada y guardada.")
             except Exception as e:
                 print(f"Error al procesar carpeta DICOM: {e}")
-                
+
         elif opcion == 'b':
             clave = input("Clave del DICOM para paciente: ")
             if clave in dic_archivos:
@@ -45,3 +46,13 @@ def menu():
                     print(f"Error al ingresar paciente: {e}")
             else:
                 print("Clave no encontrada.")
+
+        elif opcion == 'c':
+            ruta = input("Ruta de imagen PNG/JPG: ")
+            clave = input("Clave para guardar imagen: ")
+            try:
+                img = ImagenSimple(ruta)
+                dic_archivos[clave] = img
+                print(f"Imagen {clave} cargada.")
+            except Exception as e:
+                print(f"Error al cargar imagen: {e}")
