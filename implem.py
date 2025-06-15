@@ -22,6 +22,10 @@ def menu():
         if opcion == 'a':
             carpeta = input("Ruta carpeta DICOM: ")
             clave = input("Nombre clave para guardar: ")
+            if not os.path.exists(carpeta):
+                print("La ruta proporcionada no existe.")
+                continue
+
             try:
                 dicom = ImagenDICOM(carpeta)
                 if dicom.volumen.size == 0:
@@ -65,8 +69,14 @@ def menu():
                     opciones = [(20, 30), (50, 10), (0, 100), (-30, -10)]
                     for i, (dx, dy) in enumerate(opciones):
                         print(f"{i+1}. Trasladar {dx}px horizontal y {dy}px vertical")
-                    eleccion = int(input("Seleccione opción de traslación: "))
-                    dx, dy = opciones[eleccion - 1]
+                    try:
+                        eleccion = int(input("Seleccione opción de traslación: "))
+                        if eleccion < 1 or eleccion > len(opciones):
+                            raise ValueError("Opción fuera de rango.")
+                        dx, dy = opciones[eleccion - 1]
+                    except ValueError as e:
+                        print(f"Entrada inválida: {e}")
+                        continue
                     M = np.float32([[1, 0, dx], [0, 1, dy]])
                     trasladada = cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))
                     fig, (ax1, ax2) = plt.subplots(1, 2)
@@ -89,8 +99,17 @@ def menu():
                     img_obj = dic_archivos[clave]
                     print("Métodos: binario, binario_invertido, truncado, tozero, tozero_invertido")
                     metodo = input("Elija método de binarización: ")
-                    kernel = int(input("Tamaño del kernel: "))
+                    try:
+                        kernel = int(input("Tamaño del kernel: "))
+                        if kernel <= 0:
+                            raise ValueError("El tamaño del kernel debe ser un entero positivo.")
+                    except ValueError as e:
+                        print(f"Error: {e}")
+                        continue
                     forma = input("Forma a dibujar (circulo/cuadrado): ")
+                    if forma.lower() not in ['circulo', 'cuadrado']:
+                        print("Forma no válida. Debe ser 'circulo' o 'cuadrado'.")
+                        continue
 
                     img_obj.binarizar(metodo)
                     img_obj.morfologia(kernel)
@@ -100,9 +119,7 @@ def menu():
                     cv2.imwrite(nombre_archivo, img_obj.img_final)
                     print(f"Imagen procesada guardada como {nombre_archivo}")
                 except Exception as e:
-                    print(f"Error al procesar imagen: {e}")
-            else:
-                print("Clave no encontrada.")
+                    print(f"Error al procesar
 
         elif opcion == 'f':
             print("Saliendo del sistema.")
