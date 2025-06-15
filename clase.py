@@ -16,4 +16,16 @@ class ImagenDICOM:
         self.archivos = self._cargar_archivos()
         self.dicom_objs = self._leer_dicom_objs()
         self.volumen = self._reconstruir_volumen()
+    def _cargar_archivos(self):
+        try:
+            archivos = [f for f in os.listdir(self.carpeta) if f.endswith('.dcm')]
+            archivos_ordenados = sorted(archivos, key=lambda x: int(os.path.splitext(x)[0]))
+            if not archivos_ordenados:
+                raise ValueError("No se encontraron archivos DICOM en la carpeta.")
+            return archivos_ordenados
+        except Exception as e:
+            print(f"Error al cargar archivos DICOM: {e}")
+            return []
+
+
 
