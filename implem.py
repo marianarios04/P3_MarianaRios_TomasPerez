@@ -15,3 +15,19 @@ def menu():
         print("d. Transformación geométrica (DICOM)")
         print("e. Procesar imagen simple (binarización y morfología)")
         print("f. Salir")
+
+        opcion = input("Elija una opción: ").lower()
+
+        if opcion == 'a':
+            carpeta = input("Ruta carpeta DICOM: ")
+            clave = input("Nombre clave para guardar: ")
+            try:
+                dicom = ImagenDICOM(carpeta)
+                if dicom.volumen.size == 0:
+                    print("No se pudo crear el volumen 3D.")
+                    continue
+                dicom.mostrar_cortes()
+                dic_archivos[clave] = dicom
+                print(f"Carpeta {clave} procesada y guardada.")
+            except Exception as e:
+                print(f"Error al procesar carpeta DICOM: {e}")
